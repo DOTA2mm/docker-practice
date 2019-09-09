@@ -1,18 +1,22 @@
 const http = require('http')
 const redis = require('ioredis')
-const mysql = require('mysql2/promise')
+const mysql = require('mysql2')
 const { parse: parseURL } = require('url')
 
-const redisClient = redis.createClient()
+const redisClient = redis.createClient({
+    host: 'redis'
+})
 redisClient.on('error', err => {
     console.log(err)
 })
 const redisNS = 'test:docker:'
 
-const connection = mysql.createConnection({
-    host: 'db',
-    database: 'forum'
-})
+const pool = mysql.createPool({
+    host: 'mysql',
+    database: 'forum',
+    user: 'Chuck',
+    password: '123@abc'
+}).promise()
 
 const server = http.createServer(async (req, res) => {
     const url = parseURL(req.url)
@@ -27,7 +31,7 @@ const server = http.createServer(async (req, res) => {
             if (!incrRes[0][0]) {
                 resObj.count = incrRes[0][1]
             }
-            const [rows, fields] = await connection.execute('SELECT name, nickname, avatar, email FROM users WHERE id = ?', [1])
+            const [rows, fields] = await pool.query('SELECT name, nickname, avatar, email FROM users WHERE id = ?', [1])
             console.log(rows, fields)
             if (rows.length) {
                 resObj.userInfo = rows[0]
