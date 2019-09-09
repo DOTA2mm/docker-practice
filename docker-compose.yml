@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  web:
+    build:
+      context: ./app
+    ports:
+      - 5200:5200
+    depends_on:
+      - redis
+      - mysql
+    environment:
+      - NODE_ENV=production
+      - DATABASE_HOST=db
+    networks:
+      - webnet
+    # volumes:
+    #   - ./app:/usr/src/app
+    # command: node index.js
+
+  redis:
+    image: redis:latest
+    expose:
+      - "6379"
+    networks:
+      - webnet
+    volumes:
+      - ./data/redis:/data
+
+  mysql:
+    build: ./db
+    volumes:
+      - ./data/mysql/:/var/lib/mysql
+
+networks:
+  webnet:
