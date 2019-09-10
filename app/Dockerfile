@@ -1,14 +1,13 @@
-FROM node
+FROM node:latest
 
 # Create app directory
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install
+WORKDIR /usr/app
 
 COPY . .
 
+RUN npm config set registry 'https://registry.npm.taobao.org/' \
+    && npm install
+
 EXPOSE 5200
 
-CMD [ "node", "index.js" ]
+# CMD [ "node", "index.js" ]

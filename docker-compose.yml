@@ -11,10 +11,10 @@ services:
       - mysql
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=db
-    # volumes:
-    #   - ./app:/usr/src/app
-    # command: node index.js
+    volumes:
+      - ./app:/usr/app
+      - /usr/app/node_modules
+    command: npm start
 
   redis:
     image: redis:latest

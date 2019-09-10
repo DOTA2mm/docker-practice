@@ -31,7 +31,7 @@ const server = http.createServer(async (req, res) => {
             if (!incrRes[0][0]) {
                 resObj.count = incrRes[0][1]
             }
-            const [rows, fields] = await pool.query('SELECT name, nickname, avatar, email FROM users WHERE id = ?', [1])
+            const [rows, fields] = await pool.query('SELECT name, nickname, avatar, email, create_time FROM users WHERE id = ?', [1])
             console.log(rows, fields)
             if (rows.length) {
                 resObj.userInfo = rows[0]
